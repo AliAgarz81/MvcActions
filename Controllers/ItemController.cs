@@ -68,4 +68,45 @@ public class ItemController : Controller
         }
         return View(item);
     }
+
+    public async Task<IActionResult> Update(Guid id)
+    {
+        var item = await _context.Items.FirstOrDefaultAsync(i => i.Id == id);
+        if (item is null)
+        {
+            return NotFound();
+        }
+        return View(item);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Update(Item item)
+    {
+        if (ModelState.IsValid)
+        {
+            _context.Update(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        return View(item);
+    }
+    
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var item = await _context.Items.FirstOrDefaultAsync(i => i.Id == id);
+        if (item is null)
+        {
+            return NotFound();
+        }
+        return View(item);
+    }
+    
+    [HttpPost, ActionName("Delete")]
+    public async Task<IActionResult> DeleteConfirmed(Guid id)
+    {
+        var item = await _context.Items.FirstOrDefaultAsync(i => i.Id == id);
+        _context.Remove(item);
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
 }
